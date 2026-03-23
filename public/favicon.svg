@@ -1,13 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Dark background for tab bar visibility -->
+  <rect width="64" height="64" rx="14" fill="#111"/>
+  <!-- White circle with wing cutout -->
   <path fill-rule="evenodd" d="
-    M32 4
-    A28 28 0 1 1 32 60
-    A28 28 0 1 1 32 4
+    M32 6
+    A26 26 0 1 1 32 58
+    A26 26 0 1 1 32 6
     Z
-    M54 11
-    C 46 14, 34 20, 20 30
-    C 34 40, 46 48, 54 53
-    C 62 38, 62 26, 54 11
+    M52 13
+    C 44 16, 33 22, 20 30
+    C 33 38, 44 46, 52 51
+    C 59 37, 59 25, 52 13
     Z
   " fill="white"/>
 </svg>
