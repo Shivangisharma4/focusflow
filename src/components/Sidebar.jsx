@@ -19,13 +19,15 @@ export default function Sidebar({ activeView, onViewChange }) {
         borderRight: `1px solid ${theme.border}`,
       }}>
 
-      {/* Brand mark */}
-      <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-10 relative"
+      {/* Brand mark — FocusFlow bird logo */}
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-10 relative overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDim})`,
           boxShadow: `0 4px 20px ${theme.primaryGlow}`,
         }}>
-        <span className="font-display text-[14px] italic font-medium" style={{ color: theme.activeText }}>f</span>
+        <svg viewBox="0 0 64 64" width="22" height="22">
+          <path d="M43 10C36 8 28 9 22 14C14 20 11 31 14 40C17 49 26 55 36 54C42 53 47 50 50 45C46 50 40 53 33 53C24 53 16 46 14 37C12 28 15 18 23 12C30 7 38 8 43 10Z" fill={theme.activeText}/>
+        </svg>
       </div>
 
       {/* Nav icons */}

@@ -18,10 +18,16 @@ export default function Header({ sessionStart }) {
     <header className="flex items-center px-6 h-[52px] shrink-0 anim-in"
       style={{ borderBottom: `1px solid ${theme.border}`, animationDelay: '0.06s' }}>
 
-      <h1 className="text-[19px] font-semibold tracking-[-0.02em]">
-        <span style={{ color: theme.text }}>Focus</span>
-        <span style={{ color: theme.primary }}>Flow</span>
-      </h1>
+      <div className="flex items-center gap-2.5">
+        <svg viewBox="0 0 64 64" width="22" height="22">
+          <circle cx="32" cy="32" r="30" fill={theme.primary}/>
+          <path d="M43 10C36 8 28 9 22 14C14 20 11 31 14 40C17 49 26 55 36 54C42 53 47 50 50 45C46 50 40 53 33 53C24 53 16 46 14 37C12 28 15 18 23 12C30 7 38 8 43 10Z" fill={theme.isDark ? '#111' : '#fff'}/>
+        </svg>
+        <h1 className="text-[19px] font-semibold tracking-[-0.02em]">
+          <span style={{ color: theme.text }}>focus</span>
+          <span style={{ color: theme.primary }}>flow</span>
+        </h1>
+      </div>
 
       <div className="flex-1" />
 
