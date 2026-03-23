@@ -20,8 +20,8 @@ export default function Header({ sessionStart }) {
 
       <div className="flex items-center gap-2.5">
         <svg viewBox="0 0 64 64" width="22" height="22">
-          <circle cx="32" cy="32" r="30" fill={theme.primary}/>
-          <path d="M23 55L23 36L17.5 36C16 36 16 29 17.5 29L23 29C23 18 24.5 12 29 9C33 5.5 39 6 44 8C45 8.5 45 10 44 10.8L40.5 13C39.8 13.5 38.8 13.2 38 13C35 12 32.5 12.5 31 14.5C29.5 16.5 29 19.5 29 29L37 29C38.5 29 38.5 36 37 36L29 36L29 55C29 56.5 23 56.5 23 55Z" fill={theme.isDark ? '#111' : '#fff'}/>
+          <circle cx="32" cy="32" r="28" fill={theme.primary}/>
+          <path d="M54 11C46 14 34 20 20 30C34 40 46 48 54 53C62 38 62 26 54 11Z" fill={theme.isDark ? '#111' : '#fff'}/>
         </svg>
         <h1 className="text-[19px] font-semibold tracking-[-0.02em]">
           <span style={{ color: theme.text }}>focus</span>

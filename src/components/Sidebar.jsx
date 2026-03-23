@@ -26,7 +26,7 @@ export default function Sidebar({ activeView, onViewChange }) {
           boxShadow: `0 4px 20px ${theme.primaryGlow}`,
         }}>
         <svg viewBox="0 0 64 64" width="22" height="22">
-          <path d="M23 55L23 36L17.5 36C16 36 16 29 17.5 29L23 29C23 18 24.5 12 29 9C33 5.5 39 6 44 8C45 8.5 45 10 44 10.8L40.5 13C39.8 13.5 38.8 13.2 38 13C35 12 32.5 12.5 31 14.5C29.5 16.5 29 19.5 29 29L37 29C38.5 29 38.5 36 37 36L29 36L29 55C29 56.5 23 56.5 23 55Z" fill={theme.activeText}/>
+          <path fillRule="evenodd" d="M32 4A28 28 0 1 1 32 60A28 28 0 1 1 32 4Z M54 11C46 14 34 20 20 30C34 40 46 48 54 53C62 38 62 26 54 11Z" fill={theme.activeText}/>
         </svg>
       </div>
 
