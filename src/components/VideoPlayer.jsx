@@ -7,7 +7,6 @@ const DEFAULT_VIDEOS = {
   minecraft: { id: 'z84bmLDzIIk', label: 'Minecraft' },
 }
 
-// Ensure YouTube IFrame API is loaded only once
 let ytApiPromise = null
 function loadYTApi() {
   if (ytApiPromise) return ytApiPromise
@@ -36,56 +35,85 @@ export default function VideoPlayer({ videoType, onVideoTypeChange, opacity, onO
   const playerRef = useRef(null)
   const containerRef = useRef(null)
   const readyRef = useRef(false)
+  const volumeRef = useRef(volume)
+  const currentTypeRef = useRef(videoType)
+  volumeRef.current = volume
+  currentTypeRef.current = videoType
 
-  const activeId = videoIds[videoType]
-
-  // Create YT.Player
+  // Create player ONCE on mount
   useEffect(() => {
     let cancelled = false
+
     loadYTApi().then(() => {
-      if (cancelled || !containerRef.current) return
-      // Destroy previous player if exists
-      if (playerRef.current?.destroy) {
-        try { playerRef.current.destroy() } catch (_) {}
-      }
+      if (cancelled) return
+
+      const type = currentTypeRef.current
+      const isMinecraft = type === 'minecraft'
+      const vid = isMinecraft ? DEFAULT_VIDEOS.minecraft.id : DEFAULT_VIDEOS.subway.id
+
       playerRef.current = new window.YT.Player('gameplay-player', {
         width: '100%',
         height: '100%',
-        videoId: activeId,
+        videoId: vid,
         playerVars: {
           autoplay: 1,
           loop: 1,
-          playlist: videoType === 'minecraft' ? undefined : activeId,
-          list: videoType === 'minecraft' ? 'PLmSs-0cFIbfVWhkZx0i4UMiZdr2C0Z8w7' : undefined,
+          playlist: vid,
           controls: 0,
           modestbranding: 1,
           rel: 0,
+          mute: 1,
         },
         events: {
           onReady: (e) => {
+            if (cancelled) return
             readyRef.current = true
-            e.target.setVolume(volume)
-            if (volume === 0) e.target.mute()
-            else e.target.unMute()
+            e.target.setVolume(volumeRef.current)
+            if (volumeRef.current > 0) e.target.unMute()
+          },
+          onStateChange: (e) => {
+            // When video ends in non-playlist mode, restart it
+            if (e.data === window.YT.PlayerState.ENDED) {
+              e.target.playVideo()
+            }
           },
         },
       })
     })
-    return () => { cancelled = true }
-  }, []) // Only create once
 
-  // Switch video without recreating player
-  useEffect(() => {
-    if (!readyRef.current || !playerRef.current?.loadVideoById) return
-    if (videoType === 'minecraft') {
-      playerRef.current.loadPlaylist({
-        list: 'PLmSs-0cFIbfVWhkZx0i4UMiZdr2C0Z8w7',
-        listType: 'playlist',
-      })
-    } else {
-      playerRef.current.loadVideoById(activeId)
+    return () => {
+      cancelled = true
+      if (playerRef.current?.destroy) {
+        try { playerRef.current.destroy() } catch (_) {}
+      }
     }
-  }, [videoType, activeId])
+  }, [])
+
+  // Switch video content — fast, no player recreation
+  useEffect(() => {
+    if (!readyRef.current || !playerRef.current) return
+    const player = playerRef.current
+
+    const vid = videoIds[videoType]
+
+    try {
+      // Stop current video first
+      player.stopVideo()
+
+      // Load the new video
+      player.loadVideoById({
+        videoId: vid,
+        startSeconds: 0,
+      })
+
+      // Restore volume
+      player.setVolume(volumeRef.current)
+      if (volumeRef.current > 0) player.unMute()
+      else player.mute()
+    } catch (err) {
+      console.warn('Video switch error:', err)
+    }
+  }, [videoType, videoIds])
 
   // Volume control
   useEffect(() => {
@@ -123,7 +151,6 @@ export default function VideoPlayer({ videoType, onVideoTypeChange, opacity, onO
       <div className="flex items-center gap-3 px-5 h-12 shrink-0"
         style={{ borderBottom: `1px solid ${theme.border}` }}>
 
-        {/* Toggle pills */}
         <div className="flex rounded-full p-[3px]" style={{ background: theme.surface }}>
           {Object.entries(DEFAULT_VIDEOS).map(([k, v]) => (
             <button key={k} onClick={() => onVideoTypeChange(k)}
@@ -145,7 +172,7 @@ export default function VideoPlayer({ videoType, onVideoTypeChange, opacity, onO
         <div className="ml-auto flex items-center gap-3">
           <Eye size={13} style={{ color: theme.textMuted }} />
           <input type="range" min="0" max="100" value={Math.round(opacity * 100)}
-            onChange={e => onOpacityChange(parseInt(e.target.value) || 0 / 100)}
+            onChange={e => onOpacityChange((parseInt(e.target.value) || 0) / 100)}
             className="w-16"
             style={{
               '--track-bg': theme.borderHard,
@@ -179,12 +206,11 @@ export default function VideoPlayer({ videoType, onVideoTypeChange, opacity, onO
         </div>
       )}
 
-      {/* Video viewport */}
+      {/* Video viewport — fills available space */}
       <div className="flex-1 relative min-h-0 overflow-hidden" style={{ background: '#000' }}>
         <div className="absolute inset-0 transition-opacity duration-500" style={{ opacity }}>
-          <div id="gameplay-player" className="w-full h-full" />
+          <div id="gameplay-player" style={{ width: '100%', height: '100%' }} />
         </div>
-        {/* Bottom gradient fade */}
         <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
           style={{ background: `linear-gradient(transparent, ${theme.isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.2)'})` }} />
       </div>
