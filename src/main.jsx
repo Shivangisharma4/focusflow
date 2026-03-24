@@ -1,11 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { pdfjs } from 'react-pdf'
-import { inject } from '@vercel/analytics'
+import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 import App from './App.jsx'
-
-inject()
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -15,5 +13,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
+    <Analytics />
   </StrictMode>,
 )
