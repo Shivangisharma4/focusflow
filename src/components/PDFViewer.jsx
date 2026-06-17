@@ -40,7 +40,22 @@ const PDFViewer = forwardRef(function PDFViewer({ fileUrl, onTotalPages, onTextE
         for (let p = 1; p <= pdf.numPages; p++) {
           const page = await pdf.getPage(p)
           const content = await page.getTextContent()
-          pageTexts.push(cleanPDFText(content.items.map(i => i.str).join(' ')))
+          
+          let pageText = ''
+          let lastY = null
+          for (const item of content.items) {
+            if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+              pageText += '\n'
+            } else if (item.hasNewline) {
+              pageText += '\n'
+            } else {
+              pageText += ' '
+            }
+            pageText += item.str
+            lastY = item.transform[5]
+          }
+          
+          pageTexts.push(cleanPDFText(pageText))
         }
         if (!cancelled) onTextExtracted(pageTexts)
       } catch (e) { console.error(e) }
